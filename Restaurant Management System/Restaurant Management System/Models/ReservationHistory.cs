@@ -6,8 +6,8 @@ namespace Restaurant_Management_System.Models
     public class ReservationHistory
     {
         [Key]
-        public int ReservationHistoryId { get; set; }
-        public int ReservationId { get; set; }
+        public Guid ReservationHistoryId { get; set; }
+        public Guid ReservationId { get; set; }
         public string ReservationName { get; set;}
         public string ReservationStatus { get; set; }
         public DateTime TimeStamp { get; set; }

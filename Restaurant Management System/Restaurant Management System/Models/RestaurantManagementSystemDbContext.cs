@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 namespace Restaurant_Management_System.Models
 {
-    public class RestaurantManagementSystemDbContext : DbContext
+    public class RestaurantManagementSystemDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         public RestaurantManagementSystemDbContext(DbContextOptions<RestaurantManagementSystemDbContext> options) : base(options)
         {
@@ -9,7 +11,6 @@ namespace Restaurant_Management_System.Models
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<MenuItem> MenuItems { get; set; }
         public DbSet<DailySpecial> DailySpecials { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
@@ -19,20 +20,16 @@ namespace Restaurant_Management_System.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserRole>()
-                .HasMany(ur => ur.Users)
-                .WithOne(u => u.Role)
-                .HasForeignKey(u => u.RoleId);
 
             modelBuilder.Entity<User>()
                 .HasOne(u => u.SeatingPreference)
                 .WithOne(sp => sp.User)
-                .HasForeignKey<SeatingPreference>(sp => sp.UserId);
+                .HasForeignKey<SeatingPreference>(sp => sp.Id);
 
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Reservations)
                 .WithOne(r => r.User)
-                .HasForeignKey(r => r.UserId);
+                .HasForeignKey(r => r.Id);
 
             modelBuilder.Entity<MenuItem>()
                 .HasMany(mi => mi.DailySpecials)
