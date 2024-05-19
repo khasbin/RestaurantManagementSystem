@@ -4,7 +4,8 @@ namespace Restaurant_Management_System.Models
 {
     public class MenuItem
     {
-        public int MenuItemId { get; set; }
+        [Key]
+        public Guid MenuItemId { get; set; }
 
         [Required(ErrorMessage = "Please specify the name of the menu")]
         public string Name { get; set; }

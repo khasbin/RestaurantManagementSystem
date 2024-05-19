@@ -1,11 +1,13 @@
-﻿using System.Reflection.Metadata;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection.Metadata;
 
 namespace Restaurant_Management_System.Models
 {
     public class Reservation
     {
-        public int ReservationId { get; set; }  
-        public int UserId { get; set; }
+        [Key]
+        public Guid ReservationId { get; set; }  
+        public Guid Id { get; set; }
         public DateTime ReservationDate { get; set; }
         public TimeSpan ReservationTime { get; set; }   
         public int NumberOfReservations { get; set; }

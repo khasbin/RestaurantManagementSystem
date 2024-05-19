@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Restaurant_Management_System.Models;
 
@@ -9,7 +10,14 @@ builder.Services.AddDbContext<RestaurantManagementSystemDbContext>(options =>
                                                                  options.UseSqlServer(builder.Configuration
                                                                  .GetConnectionString("DefaultConnection")));
 
-var app = builder.Build();
+//builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<RestaurantManagementSystemDbContext>();
+builder.Services.AddIdentity<User,IdentityRole<Guid>> ()
+     .AddEntityFrameworkStores<RestaurantManagementSystemDbContext>()
+     .AddDefaultTokenProviders()
+     .AddDefaultUI();
+
+builder.Services.AddRazorPages();
+var app =builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -23,9 +31,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
+app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
