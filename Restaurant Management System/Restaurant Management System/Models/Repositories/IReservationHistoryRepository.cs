@@ -1,6 +1,6 @@
 ﻿namespace Restaurant_Management_System.Models.Repositories
 {
-    public class IReservationHistoryRepository
+    public interface IReservationHistoryRepository
     {
     }
 }
