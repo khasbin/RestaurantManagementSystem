@@ -16,7 +16,8 @@ namespace Restaurant_Management_System.Models
         public string LastName { get; set; } = string.Empty;
         public string? Address1 { get; set; }
         public DateTime DOB { get; set; }
-        public SeatingPreference SeatingPreference { get; set; }
+
         public ICollection<Reservation> Reservations { get; set; }
+        public ICollection<ReservationHistory> reservationHistories { get; set; }
     }
 }

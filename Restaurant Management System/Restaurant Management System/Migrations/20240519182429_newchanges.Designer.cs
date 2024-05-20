@@ -12,8 +12,8 @@ using Restaurant_Management_System.Models;
 namespace Restaurant_Management_System.Migrations
 {
     [DbContext(typeof(RestaurantManagementSystemDbContext))]
-    [Migration("20240519125901_identity3")]
-    partial class identity3
+    [Migration("20240519182429_newchanges")]
+    partial class newchanges
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -240,17 +240,10 @@ namespace Restaurant_Management_System.Migrations
             modelBuilder.Entity("Restaurant_Management_System.Models.Reservation", b =>
                 {
                     b.Property<Guid>("ReservationId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Capacity")
-                        .HasColumnType("int");
 
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("NumberOfReservations")
-                        .HasColumnType("int");
 
                     b.Property<int>("NumberofGuests")
                         .HasColumnType("int");
@@ -258,12 +251,23 @@ namespace Restaurant_Management_System.Migrations
                     b.Property<DateTime>("ReservationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("ReservationHistoryId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<TimeSpan>("ReservationTime")
                         .HasColumnType("time");
+
+                    b.Property<Guid>("SeatingPrefereceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SeatingPreferenceId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ReservationId");
 
                     b.HasIndex("Id");
+
+                    b.HasIndex("SeatingPreferenceId");
 
                     b.ToTable("Reservations");
                 });
@@ -288,9 +292,12 @@ namespace Restaurant_Management_System.Migrations
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("ReservationHistoryId");
 
-                    b.HasIndex("ReservationId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("ReservationHistories");
                 });
@@ -301,17 +308,11 @@ namespace Restaurant_Management_System.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("PreferenceDetails")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SeatingPreferenceId");
-
-                    b.HasIndex("Id")
-                        .IsUnique();
 
                     b.ToTable("SeatingPreferences");
                 });
@@ -466,29 +467,30 @@ namespace Restaurant_Management_System.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Restaurant_Management_System.Models.ReservationHistory", "ReservationHistory")
+                        .WithMany("Reservations")
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Restaurant_Management_System.Models.SeatingPreference", "SeatingPreference")
+                        .WithMany()
+                        .HasForeignKey("SeatingPreferenceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ReservationHistory");
+
+                    b.Navigation("SeatingPreference");
+
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("Restaurant_Management_System.Models.ReservationHistory", b =>
                 {
-                    b.HasOne("Restaurant_Management_System.Models.Reservation", "Reservation")
-                        .WithMany("ReservationHistories")
-                        .HasForeignKey("ReservationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Reservation");
-                });
-
-            modelBuilder.Entity("Restaurant_Management_System.Models.SeatingPreference", b =>
-                {
-                    b.HasOne("Restaurant_Management_System.Models.User", "User")
-                        .WithOne("SeatingPreference")
-                        .HasForeignKey("Restaurant_Management_System.Models.SeatingPreference", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
+                    b.HasOne("Restaurant_Management_System.Models.User", null)
+                        .WithMany("reservationHistories")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Restaurant_Management_System.Models.MenuItem", b =>
@@ -496,17 +498,16 @@ namespace Restaurant_Management_System.Migrations
                     b.Navigation("DailySpecials");
                 });
 
-            modelBuilder.Entity("Restaurant_Management_System.Models.Reservation", b =>
+            modelBuilder.Entity("Restaurant_Management_System.Models.ReservationHistory", b =>
                 {
-                    b.Navigation("ReservationHistories");
+                    b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("Restaurant_Management_System.Models.User", b =>
                 {
                     b.Navigation("Reservations");
 
-                    b.Navigation("SeatingPreference")
-                        .IsRequired();
+                    b.Navigation("reservationHistories");
                 });
 #pragma warning restore 612, 618
         }

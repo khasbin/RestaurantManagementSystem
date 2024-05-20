@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata;
 
 namespace Restaurant_Management_System.Models
 {
@@ -8,13 +7,15 @@ namespace Restaurant_Management_System.Models
         [Key]
         public Guid ReservationId { get; set; }  
         public Guid Id { get; set; }
+
+        public Guid SeatingPrefereceId { get; set; }
+        public Guid ReservationHistoryId { get; set; }  
         public DateTime ReservationDate { get; set; }
         public TimeSpan ReservationTime { get; set; }   
-        public int NumberOfReservations { get; set; }
         public int NumberofGuests { get; set; }
-        public int Capacity { get; set; }   
 
         public User User { get; set; }
-        public ICollection<ReservationHistory> ReservationHistories { get; set; }   
+        public ReservationHistory ReservationHistory { get; set; }
+        public SeatingPreference SeatingPreference { get; set; }   
     }
 }
