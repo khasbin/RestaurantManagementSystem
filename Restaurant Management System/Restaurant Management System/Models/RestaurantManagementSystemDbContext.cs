@@ -20,12 +20,6 @@ namespace Restaurant_Management_System.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.SeatingPreference)
-                .WithOne(sp => sp.User)
-                .HasForeignKey<SeatingPreference>(sp => sp.Id);
-
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Reservations)
                 .WithOne(r => r.User)
@@ -36,10 +30,10 @@ namespace Restaurant_Management_System.Models
                 .WithOne(ds => ds.MenuItem)
                 .HasForeignKey(ds => ds.MenuItemId);
 
-            modelBuilder.Entity<Reservation>()
-                .HasMany(r => r.ReservationHistories)
-                .WithOne(rh => rh.Reservation)
-                .HasForeignKey(rh => rh.ReservationId);
+            modelBuilder.Entity<ReservationHistory>()
+                .HasMany(u => u.Reservations)
+                .WithOne(r => r.ReservationHistory)
+                .HasForeignKey(r => r.ReservationId);
 
             base.OnModelCreating(modelBuilder);
         }

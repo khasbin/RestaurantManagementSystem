@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Restaurant_Management_System.Models;
+using Restaurant_Management_System.Models.Repositories;
+using Restaurant_Management_System.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +18,22 @@ builder.Services.AddIdentity<User,IdentityRole<Guid>> ()
      .AddDefaultTokenProviders()
      .AddDefaultUI();
 
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<UserService>();
+
 builder.Services.AddRazorPages();
+
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+});
+
 var app =builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,5 +54,19 @@ app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        await RoleInitializer.InitializeAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}
 
 app.Run();

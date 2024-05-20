@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Restaurant_Management_System.Migrations
 {
     /// <inheritdoc />
-    public partial class identity3 : Migration
+    public partial class newchange : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -193,26 +193,24 @@ namespace Restaurant_Management_System.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reservations",
+                name: "ReservationHistories",
                 columns: table => new
                 {
+                    ReservationHistoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ReservationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReservationTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    NumberOfReservations = table.Column<int>(type: "int", nullable: false),
-                    NumberofGuests = table.Column<int>(type: "int", nullable: false),
-                    Capacity = table.Column<int>(type: "int", nullable: false)
+                    ReservationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReservationStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Reservations", x => x.ReservationId);
+                    table.PrimaryKey("PK_ReservationHistories", x => x.ReservationHistoryId);
                     table.ForeignKey(
-                        name: "FK_Reservations_AspNetUsers_Id",
-                        column: x => x.Id,
+                        name: "FK_ReservationHistories_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -254,23 +252,30 @@ namespace Restaurant_Management_System.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ReservationHistories",
+                name: "Reservations",
                 columns: table => new
                 {
-                    ReservationHistoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ReservationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ReservationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReservationStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReservationHistoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ReservationTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    NumberofGuests = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ReservationHistories", x => x.ReservationHistoryId);
+                    table.PrimaryKey("PK_Reservations", x => x.ReservationId);
                     table.ForeignKey(
-                        name: "FK_ReservationHistories_Reservations_ReservationId",
+                        name: "FK_Reservations_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reservations_ReservationHistories_ReservationId",
                         column: x => x.ReservationId,
-                        principalTable: "Reservations",
-                        principalColumn: "ReservationId",
+                        principalTable: "ReservationHistories",
+                        principalColumn: "ReservationHistoryId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -319,9 +324,9 @@ namespace Restaurant_Management_System.Migrations
                 column: "MenuItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReservationHistories_ReservationId",
+                name: "IX_ReservationHistories_UserId",
                 table: "ReservationHistories",
-                column: "ReservationId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservations_Id",
@@ -360,7 +365,7 @@ namespace Restaurant_Management_System.Migrations
                 name: "Reports");
 
             migrationBuilder.DropTable(
-                name: "ReservationHistories");
+                name: "Reservations");
 
             migrationBuilder.DropTable(
                 name: "SeatingPreferences");
@@ -372,7 +377,7 @@ namespace Restaurant_Management_System.Migrations
                 name: "MenuItems");
 
             migrationBuilder.DropTable(
-                name: "Reservations");
+                name: "ReservationHistories");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

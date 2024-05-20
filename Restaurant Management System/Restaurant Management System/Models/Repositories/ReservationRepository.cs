@@ -1,4 +1,5 @@
-﻿
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace Restaurant_Management_System.Models.Repositories
@@ -10,9 +11,10 @@ namespace Restaurant_Management_System.Models.Repositories
         {
             _dbcontext = dbcontext;
         }
-        public async Task<int> CreateReseravationAsync(int userId, Reservation reservation)
+        public async Task<int> CreateReseravationAsync(Guid userId, Reservation reservation)
         {
-            if (userId != null)
+            var pulledUser = await _dbcontext.Reservations.FirstOrDefaultAsync(r => r.Id == userId);
+            if (userId != null && pulledUser != null)
             {
                 await _dbcontext.Reservations.AddAsync(reservation);
                 return await _dbcontext.SaveChangesAsync();
@@ -20,13 +22,21 @@ namespace Restaurant_Management_System.Models.Repositories
             else
             {
                 throw new Exception("The user doesn't exists. ");
-            }
-            
+            } 
         }
 
-        public Task<IEnumerable<Reservation>> GetAllReservationByIdAsync(int userId)
+        public async Task<IEnumerable<Reservation>> GetAllReservationAsync(Guid userId, string userRole)
         {
-            throw new NotImplementedException();
+            IQueryable<Reservation> query = _dbcontext.Reservations;
+            if(userRole == "Staff" || userRole =="Admin")
+            {
+                //query = query.Include(r => r.ReservationHistories);
+            }
+            else
+            {
+                query = query.Where(r => r.Id == userId);
+            }
+            return await query.ToListAsync();
         }
     }
 }

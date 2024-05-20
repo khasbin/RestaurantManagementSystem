@@ -1,0 +1,23 @@
+﻿@model Reservation
+
+<form class="form" method="post" asp-controller="Reservation" asp-action="CreateReservation">
+    <div asp-validation-summary="All" class="alert-primary" role="alert">
+    </div>
+    <div class="mb-3">
+        <label asp-for=" @Model.User.FirstName" class="form-label"></label>
+        <input asp-for=" @Model.User.FirstName" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for=" @Model.User.LastName" class="form-label"></label>
+        <input asp-for=" @Model.User.LastName" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="@Model.ReservationDate" class="form-label"></label>
+        <input asp-for="@Model.ReservationDate" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="@Model.NumberofGuests" class="form-label"></label>
+        <input asp-for="@Model.NumberofGuests" class="form-control" />
+    </div>
+    <input type="Submit" class="btn btn-primary" value="Add Category" />
+</form>

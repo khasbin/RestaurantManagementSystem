@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Restaurant_Management_System.Models;
 
@@ -11,9 +12,11 @@ using Restaurant_Management_System.Models;
 namespace Restaurant_Management_System.Migrations
 {
     [DbContext(typeof(RestaurantManagementSystemDbContext))]
-    partial class RestaurantManagementSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240519175500_newchange")]
+    partial class newchange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -254,17 +257,9 @@ namespace Restaurant_Management_System.Migrations
                     b.Property<TimeSpan>("ReservationTime")
                         .HasColumnType("time");
 
-                    b.Property<Guid>("SeatingPrefereceId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SeatingPreferenceId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("ReservationId");
 
                     b.HasIndex("Id");
-
-                    b.HasIndex("SeatingPreferenceId");
 
                     b.ToTable("Reservations");
                 });
@@ -305,11 +300,17 @@ namespace Restaurant_Management_System.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("PreferenceDetails")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SeatingPreferenceId");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
 
                     b.ToTable("SeatingPreferences");
                 });
@@ -470,15 +471,7 @@ namespace Restaurant_Management_System.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Restaurant_Management_System.Models.SeatingPreference", "SeatingPreference")
-                        .WithMany()
-                        .HasForeignKey("SeatingPreferenceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("ReservationHistory");
-
-                    b.Navigation("SeatingPreference");
 
                     b.Navigation("User");
                 });
@@ -488,6 +481,17 @@ namespace Restaurant_Management_System.Migrations
                     b.HasOne("Restaurant_Management_System.Models.User", null)
                         .WithMany("reservationHistories")
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Restaurant_Management_System.Models.SeatingPreference", b =>
+                {
+                    b.HasOne("Restaurant_Management_System.Models.User", "User")
+                        .WithOne("SeatingPreference")
+                        .HasForeignKey("Restaurant_Management_System.Models.SeatingPreference", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Restaurant_Management_System.Models.MenuItem", b =>
@@ -503,6 +507,9 @@ namespace Restaurant_Management_System.Migrations
             modelBuilder.Entity("Restaurant_Management_System.Models.User", b =>
                 {
                     b.Navigation("Reservations");
+
+                    b.Navigation("SeatingPreference")
+                        .IsRequired();
 
                     b.Navigation("reservationHistories");
                 });

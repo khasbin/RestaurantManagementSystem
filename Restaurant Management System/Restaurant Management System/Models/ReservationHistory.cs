@@ -13,7 +13,7 @@ namespace Restaurant_Management_System.Models
         public DateTime TimeStamp { get; set; }
 
         [ForeignKey("ReservationId")]
-        public Reservation Reservation { get; set; }
+        public ICollection<Reservation> Reservations { get; set; }
     }
     
 }
